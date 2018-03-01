@@ -4,6 +4,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Expenses from './Expenses';
 import Income from './Income';
+import {findLastIndex} from 'lodash';
 
 const DateButton = styled.button`
     color: white;
@@ -44,7 +45,8 @@ class App extends Component {
 
         this.state = {
             date: moment(),
-            navSelected: 'expenses'
+            navSelected: 'expenses',
+            transactions: []
         };
     };
 
@@ -60,6 +62,34 @@ class App extends Component {
         this.setState({navSelected: event.target.getAttribute('name')});
     };
 
+    handleSubmitTransaction = (sum, category) => {
+        const {date: TodayDate, transactions} = this.state;
+
+        const newTransaction = {
+            date: TodayDate.format('MM.DD.YYYY'),
+            category,
+            sum
+        };
+
+        const index = findLastIndex(transactions, ({date}) => {
+            const transactionDate = moment(date, 'MM.DD.YYYY');
+            return (
+                TodayDate.isBefore(transactionDate, 'day') ||
+                TodayDate.isSame(transactionDate, 'day')
+            );
+        });
+
+        const newTransactions = [...transactions];
+        newTransactions.splice(
+            index === -1 ? transactions.length : index,
+            0,
+            newTransaction
+        );
+
+        console.log(newTransactions);
+        this.setState({transactions: newTransactions});
+    };
+
     render() {
         const {date, navSelected} = this.state;
 
@@ -68,9 +98,9 @@ class App extends Component {
                 <header>
                     <h1>Reactive Budget</h1>
                     <DateLine>
-                        <p>{date.format('DD.MM.YYYY')}</p>
-                        <DateButton onClick={this.handleSubtractDay}>+</DateButton>
-                        <DateButton onClick={this.handleAddDay}>-</DateButton>
+                        <p>{date.format('MM.DD.YYYY')}</p>
+                        <DateButton onClick={this.handleSubtractDay}>-</DateButton>
+                        <DateButton onClick={this.handleAddDay}>+</DateButton>
                     </DateLine>
                 </header>
                 <main>

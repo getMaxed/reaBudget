@@ -58,6 +58,14 @@ class Expenses extends Component {
         this.setState({[event.target.name]: event.target.value});
     };
 
+    handleEnter = () => {
+        const {onSubmit} = this.props;
+        const {transaction, category} = this.state;
+
+        onSubmit(-1 * Math.abs(parseFloat(transaction)), category);
+        this.setState({transaction: null, category: null});
+    };
+
     render() {
         const {transaction, category} = this.state;
         return (
