@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import moment from 'moment';
 import styled from 'styled-components';
+import Expenses from './Expenses';
+import Income from './Income';
 
 const DateButton = styled.button`
     color: white;
@@ -74,13 +75,26 @@ class App extends Component {
                 </header>
                 <main>
                     <Nav>
-                        <Link name="expenses" onClick={this.handleNavClick} selected={navSelected === 'expenses'}>
+                        <Link name="expenses"
+                              onClick={this.handleNavClick}
+                              selected={navSelected === 'expenses'}
+                        >
                             Today's Expenses
                         </Link>
-                        <Link name="income" onClick={this.handleNavClick} selected={navSelected === 'income'}>
+                        <Link name="income"
+                              onClick={this.handleNavClick}
+                              selected={navSelected === 'income'}
+                        >
                             Today's Income
                         </Link>
                     </Nav>
+
+                    { navSelected === 'expenses' ? (
+                        <Expenses onSubmit={this.handleSubmitTransaction} />
+                    ) : (
+                        <Income onSubmit={this.handleSubmitTransaction} />
+                    )}
+
                 </main>
             </section>
         );
